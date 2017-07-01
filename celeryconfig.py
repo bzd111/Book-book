@@ -15,11 +15,5 @@ CELERYBEAT_SCHEDULE = {
 }
 
 
-try:
-    from local_settings import * # noqa
-except ImportError:
-    pass
-
-
 if __name__ == '__main__':
     pass
