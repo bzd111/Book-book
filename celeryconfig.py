@@ -9,7 +9,7 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERYBEAT_SCHEDULE = {
     'check':{
         'task': 'book.tasks.check',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=20),
     }
 }
 

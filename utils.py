@@ -15,9 +15,9 @@ from book.config import (mail_to_list, mail_host, mail_user,
 
 TIMEOUT = 5
 ARTICLES_DICT = {
-    'da_url': "大主宰",
-    'sheng_url': "圣墟",
-    'yi_url': "一念永恒"
+    'da_url': "大主宰  ",
+    'sheng_url': "圣墟  ",
+    'yi_url': "一念永恒  "
 }
 
 def send_mail(to_list, sub, content):
@@ -64,10 +64,10 @@ def get_tree(url):
 
 def parser_url(url):
     tree = get_tree(url)
-    if not tree.xpath('//a/@style')[-1]:
-        url_for = tree.xpath('//a/@href')[-1]
+    if not tree.xpath('//div[@id="list"]/dl/dd/a/@style')[-1]:
+        url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-1]
     else:
-        url_for = tree.xpath('//a/@href')[-2]
+        url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-2]
     return urljoin(url, url_for)
 
 
@@ -76,7 +76,7 @@ def parser_article(url, name):
     tree = get_tree(url)
     title = tree.xpath('//div[@class="bookname"]/h1/text()')
     title = title[0].encode('raw_unicode_escape')
-    title = title + ARTICLES_DICT[name]
+    title = ARTICLES_DICT[name] + title
     content = tree.xpath('//div[@id="content"]/text()')
     content = map(lambda x: x.encode('raw_unicode_escape'), content)
     content = map(lambda x: x.replace("\xa0\xa0\xa0\xa0", ""), content)
