@@ -64,22 +64,32 @@ def get_tree(url):
 
 def parser_url(url):
     tree = get_tree(url)
-    if not tree.xpath('//div[@id="list"]/dl/dd/a/@style')[-1]:
-        url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-1]
-    else:
-        url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-2]
-    return urljoin(url, url_for)
-
+    url_for = ""
+    try:
+        if not tree.xpath('//div[@id="list"]/dl/dd/a/@style')[-1]:
+            url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-1]
+        else:
+            url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-2]
+    except IndexError as e:
+        print(e)
+    finally:
+        return urljoin(url, url_for)
 
 def parser_article(url, name):
     # url = parser_url(url)
+    title = content = None
     tree = get_tree(url)
-    title = tree.xpath('//div[@class="bookname"]/h1/text()')
-    title = title[0].encode('utf-8')
-    title = ARTICLES_DICT[name] + title
-    content = tree.xpath('//div[@id="content"]/text()')
-    content = map(lambda x: x.encode('utf-8'), content)
-    content = map(lambda x: x.replace("\u3000\u3000", ""), content)
-    content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
-    content = '\n'.join(content)
-    return send_mail(mail_to_list, title, content)
+    try:
+        title = tree.xpath('//div[@class="bookname"]/h1/text()')
+        content = tree.xpath('//div[@id="content"]/text()')
+    except Exception as e:
+        print('parser_article', e)
+    if title and content:
+        title = title[0].encode('utf-8')
+        title = ARTICLES_DICT[name] + title
+        content = tree.xpath('//div[@id="content"]/text()')
+        content = map(lambda x: x.encode('utf-8'), content)
+        content = map(lambda x: x.replace("\u3000\u3000", ""), content)
+        content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
+        content = '\n'.join(content)
+        return send_mail(mail_to_list, title, content)

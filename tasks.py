@@ -19,6 +19,8 @@ URLS_DICT = {
 def check():
     for name, url in URLS_DICT.items():
         all_url = parser_url(url)
+        if url == all_url:
+            return
         if not cache.get(name):
             cache.set(name, all_url)
         else:
