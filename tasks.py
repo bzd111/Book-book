@@ -22,7 +22,7 @@ def check():
         if url == all_url:
             return
         if not cache.get(name):
-            cache.set(name, all_url)
+            cache.setex(name, all_url, 3600*3)
         else:
             cache_url = cache.get(name)
             if cache_url != all_url:
