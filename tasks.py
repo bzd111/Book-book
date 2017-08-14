@@ -22,9 +22,9 @@ def check():
         if url == all_url:
             return
         if not cache.get(name):
-            cache.setex(name, all_url, 3600*3)
+            cache.set(name, all_url)
         else:
             cache_url = cache.get(name)
             if cache_url != all_url:
-                cache.set(name, all_url)
+                cache.setex(name, 3600*24*3, all_url)
                 parser_article(all_url, name)
