@@ -15,14 +15,14 @@ from requests import ReadTimeout
 from fake_useragent import UserAgent
 
 from book.config import (mail_to_list, mail_host, mail_user,
-                         mail_pass, mail_postfix, DA_URL_1,
+                         mail_pass, mail_postfix, YUAN_URL,
                          SHENG_URL_1, YI_URL_1)
 
 TIMEOUT = 5
 ARTICLES_DICT = {
-    'da_url': "大主宰  ",
     'sheng_url': "圣墟  ",
-    'yi_url': "一念永恒  "
+    'yi_url': "一念永恒  ",
+    'yuan_url': "元尊"
 }
 
 LOGGER = logging.getLogger("utils")
@@ -110,10 +110,16 @@ def parser_url(url):
     tree = get_tree(url)
     url_for = ""
     try:
-        if not tree.xpath('//div[@id="list"]/dl/dd/a/@style')[-1]:
-            url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-1]
+        if "291" not in url:
+            if not tree.xpath('//div[@id="list"]/dl/dd/a/@style')[-1]:
+                url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-1]
+            else:
+                url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-2]
         else:
-            url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-2]
+            if not tree.xpath('//div[@id="list"]/dl/dd/a/@style')[-1]:
+                url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-6]
+            else:
+                url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-7]
     except IndexError as e:
         print(e)
     finally:

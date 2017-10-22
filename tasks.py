@@ -4,14 +4,14 @@ import redis
 
 from book.celery import app
 from book.utils import parser_url, parser_article
-from book.config import (DA_URL, SHENG_URL, YI_URL,
+from book.config import (SHENG_URL, YI_URL, YUAN_URL,
                          REDIS_DB, REDIS_PORT, REDIS_HOST)
 
 cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 URLS_DICT = {
-    "da_url": DA_URL,
     "sheng_url": SHENG_URL,
-    "yi_url": YI_URL
+    "yi_url": YI_URL,
+    "yuan_url": YUAN_URL
 }
 
 
