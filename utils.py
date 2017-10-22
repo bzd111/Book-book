@@ -72,11 +72,12 @@ def send_mail(to_list, sub, content):
         server.login(mail_user, mail_pass)
         server.sendmail(me, to_list, msg.as_string())
         server.close()
-        return True
+        logger.info("send success: {}".format(1))
+        return 1
     except Exception, e:
         logger.error("send error: {}".format(e))
         print (str(e))
-        return False
+        return 0
 
 
 def get_user_agent():
