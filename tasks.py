@@ -27,11 +27,14 @@ def check():
             cache.hset(name, "send", result)
         else:
             cache_url, IS_SEND = cache.hmget(name, ["url", "send"])
-            if cache_url != all_url and int(IS_SEND):
+            IS_SEND = int(True if IS_SEND else False)
+            if cache_url != all_url and IS_SEND:
                 # cache.set(name, all_url)
                 cache.hset(name, "url", all_url)
                 result = parser_article(all_url, name)
                 cache.hset(name, "send", result)
-            elif not int(IS_SEND) and cache_url == all_url:
+            elif not IS_SEND and cache_url == all_url:
                 result = parser_article(cache_url, name)
+                if result == "None" or result == None:
+                    result = 0
                 cache.hset(name, "send", result)
