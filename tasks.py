@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 
 import redis
+from celery.utils.log import get_task_logger
 
 from book.celery import app
 from book.utils import parser_url, parser_article
 from book.config import (SHENG_URL, YI_URL, YUAN_URL,
                          REDIS_DB, REDIS_PORT, REDIS_HOST)
+
 
 cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 URLS_DICT = {
@@ -13,7 +15,7 @@ URLS_DICT = {
     "yi_url": YI_URL,
     "yuan_url": YUAN_URL
 }
-
+logger = get_task_logger(__name__)
 
 @app.task
 def check():
@@ -27,7 +29,9 @@ def check():
             cache.hset(name, "send", result)
         else:
             cache_url, IS_SEND = cache.hmget(name, ["url", "send"])
+            logger.info("cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
             IS_SEND = int(True if IS_SEND else False)
+            logger.info("cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
             if cache_url != all_url and IS_SEND:
                 # cache.set(name, all_url)
                 cache.hset(name, "url", all_url)
