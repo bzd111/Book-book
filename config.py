@@ -85,6 +85,23 @@ LOGGING = {
         },
     }
 }
+
+
+def exists(path):
+    """Test whether a path exists.  Returns False for broken symbolic links"""
+    try:
+        os.stat(path)
+    except os.error:
+        return False
+    return True
+
+
+def makedirs(name, mode=0777):
+    if not exists(name):
+        os.makedirs(name, mode)
+
+
+makedirs(LOGS_DIR)
 logging.config.dictConfig(LOGGING)
 
 
