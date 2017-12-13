@@ -13,17 +13,12 @@ from lxml import etree
 from requests import ReadTimeout
 from fake_useragent import UserAgent
 
-from .tasks import l
 from .config import (mail_to_list, mail_host, mail_user,
                      mail_pass, mail_postfix, YUAN_URL,
                      SHENG_URL_1, YI_URL_1)
 
 TIMEOUT = 5
-ARTICLES_DICT = {
-    'sheng_url': "圣墟  ",
-    'yi_url': "一念永恒  ",
-    'yuan_url': "元尊"
-}
+
 
 LOGGER = logging.getLogger("utils")
 # 设置logging模块的前缀

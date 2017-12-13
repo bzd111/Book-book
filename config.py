@@ -18,6 +18,12 @@ URLS_DICT = {
     "fei_url": FEI_URL
 }
 
+ARTICLES_DICT = {
+    'sheng_url': "圣墟  ",
+    'yi_url': "一念永恒  ",
+    'yuan_url': "元尊",
+    "fei_url": "飞剑问道"
+}
 REDIS_DB = 0
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
