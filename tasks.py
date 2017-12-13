@@ -1,6 +1,6 @@
 # coding: utf-8
-import logging
 from __future__ import absolute_import
+import logging
 
 import redis
 
@@ -10,8 +10,8 @@ from .config import (URLS_DICT, REDIS_DB, REDIS_PORT, REDIS_HOST)
 
 cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
-log = logging.getLogger(__name__)
-
+log = logging.getLogger("tasks")
+log.info("tasks.name: {}".format(__name__))
 
 @app.task
 def check():
@@ -25,9 +25,9 @@ def check():
             cache.hset(name, "send", result)
         else:
             cache_url, IS_SEND = cache.hmget(name, ["url", "send"])
-            log.info("cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
+            log.info("Before cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
             IS_SEND = int(True if IS_SEND else False)
-            log.info("cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
+            log.info("After cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
             if cache_url != all_url and IS_SEND:
                 # cache.set(name, all_url)
                 cache.hset(name, "url", all_url)
@@ -37,4 +37,5 @@ def check():
                 result = parser_article(cache_url, name)
                 if result == "None" or result == None:
                     result = 0
+                log.info("result: {}".format(result))
                 cache.hset(name, "send", result)

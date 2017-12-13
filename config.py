@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import logging.config
 
-
-LOGS_DIR = os.path.join(os.getcwd(), 'logs')
+ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
+LOGS_DIR = os.path.join(ROOT_PATH, 'logs')
 
 SHENG_URL = "http://www.biquge.cc/html/156/156129/"
 YI_URL = "http://www.biquge.cc/html/9/9378/"
@@ -33,7 +34,7 @@ REDIS_DB = 0
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
-LOG_LEVEL = 'DEBUG' if os.getenv('ANT_DEBUG') else 'WARN'
+LOG_LEVEL = 'DEBUG' if os.getenv('BOOK_DEBUG') else 'INFO'
 
 LOGGING = {
     'version': 1,
@@ -72,11 +73,6 @@ LOGGING = {
         }
     },
     'loggers': {
-        'default': {
-            'handlers': ['console', 'default'],
-            'level': LOG_LEVEL,
-            'propagate': False,
-        },
         'tasks': {
             'handlers': ['console', 'tasks'],
             'level': LOG_LEVEL,
@@ -89,6 +85,7 @@ LOGGING = {
         },
     }
 }
+logging.config.dictConfig(LOGGING)
 
 
 try:

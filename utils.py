@@ -19,8 +19,8 @@ from .config import (mail_to_list, mail_host, mail_user,
 
 TIMEOUT = 5
 
-log = logging.getLogger(__name__)
-
+log = logging.getLogger("utils")
+log.info("utils.name: {}".format(__name__))
 
 def send_mail(to_list, sub, content):
     me = "<" + mail_user + "@" + mail_postfix + ">"
