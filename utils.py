@@ -127,7 +127,6 @@ def parser_url(url):
 
 
 def parser_article(url, name):
-    # url = parser_url(url)
     logger.info("parser_article: {}, {}".format(url, name))
     title = content = None
     tree = get_tree(url)

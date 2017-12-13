@@ -6,17 +6,12 @@ from celery.utils.log import get_task_logger
 
 from .celery import app
 from .utils import parser_url, parser_article
-from .config import (SHENG_URL, YI_URL, YUAN_URL,
-                     REDIS_DB, REDIS_PORT, REDIS_HOST)
-
+from .config import (URLS_DICT, REDIS_DB, REDIS_PORT, REDIS_HOST)
 
 cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-URLS_DICT = {
-    "sheng_url": SHENG_URL,
-    "yi_url": YI_URL,
-    "yuan_url": YUAN_URL
-}
+
 log = get_task_logger(__name__)
+
 
 @app.task
 def check():
