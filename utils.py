@@ -14,11 +14,10 @@ from requests import ReadTimeout
 from fake_useragent import UserAgent
 
 from .config import (mail_to_list, mail_host, mail_user,
-                     mail_pass, mail_postfix, YUAN_URL,
-                     SHENG_URL_1, YI_URL_1)
+                     mail_pass, mail_postfix, ARTICLES_DICT,
+                     YUAN_URL, SHENG_URL_1, YI_URL_1)
 
 TIMEOUT = 5
-
 
 LOGGER = logging.getLogger("utils")
 # 设置logging模块的前缀
@@ -52,7 +51,6 @@ logger.addHandler(handler)
 
 
 def send_mail(to_list, sub, content):
-
     me = "<" + mail_user + "@" + mail_postfix + ">"
     msg = MIMEText(content, _subtype="plain", _charset='utf-8')
     msg['Subject'] = Header(sub, 'utf-8')
