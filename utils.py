@@ -19,35 +19,7 @@ from .config import (mail_to_list, mail_host, mail_user,
 
 TIMEOUT = 5
 
-LOGGER = logging.getLogger("utils")
-# 设置logging模块的前缀
-LOGGING_MAX_BYTES = 5 * 1024 * 1024
-root_path = os.path.realpath(os.path.dirname(__file__))
-LOGNAME = os.path.join(root_path, 'test.log')
-LEVELS = {  # 日志级别
-    1: 'CRITICAL',
-    2: 'ERROR',
-    3: 'WARNING',
-    4: 'INFO',
-    5: 'DEBUG',  # 数字越大记录越详细
-}
-
-# formatter = logging.Formatter('%(name)s %(asctime)s %(levelname)s
-# %(message)s')  # 自定义日志格式
-
-formatter = logging.Formatter('%(levelname)s:%(asctime)s - %(filename)s:%(lineno)s - %(name)s - %(message)s')  # 自定义日志格式
-
-handler = logging.handlers.RotatingFileHandler(
-    LOGNAME,
-    maxBytes=10240000,  # 文件最大字节数
-    backupCount=2,  # 会轮转5个文件，共6个
-
-)
-handler.setFormatter(formatter)  # 设置日志格式
-LOGGER.addHandler(handler)  # 增加处理器
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
+log = logging.getLogger(__name__)
 
 
 def send_mail(to_list, sub, content):
@@ -57,18 +29,18 @@ def send_mail(to_list, sub, content):
     msg['From'] = mail_user
     msg['To'] = ";".join(to_list)
 
-    logger.info("msg")
-    logger.info("{}, {}, {}".format(mail_user, mail_pass, mail_host))
+    log.info("msg")
+    log.info("{}, {}, {}".format(mail_user, mail_pass, mail_host))
     try:
         server = smtplib.SMTP()
         server.connect(mail_host)
         server.login(mail_user, mail_pass)
         server.sendmail(me, to_list, msg.as_string())
         server.close()
-        logger.info("send success: {}".format(1))
+        log.info("send success: {}".format(1))
         return 1
-    except Exception:
-        logger.exception("send error")
+    except Exception as e:
+        log.exception("send error")
         return 0
 
 
@@ -99,7 +71,7 @@ def get_tree(url):
 
 
 def parser_url(url):
-    logger.info("parser url: {}".format(url))
+    log.info("parser url: {}".format(url))
     tree = get_tree(url)
     url_for = ""
     try:
@@ -114,13 +86,13 @@ def parser_url(url):
             else:
                 url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-7]
     except IndexError as e:
-        logger.error("parser url error: {}".format(e))
+        log.error("parser url error: {}".format(e))
     finally:
         return urljoin(url, url_for)
 
 
 def parser_article(url, name):
-    logger.info("parser_article: {}, {}".format(url, name))
+    log.info("parser_article: {}, {}".format(url, name))
     title = content = None
     tree = get_tree(url)
     try:
@@ -138,5 +110,5 @@ def parser_article(url, name):
         content = '\n'.join(content)
         # a = send_mail(mail_to_list, title, content)
         result = send_mail(mail_to_list, title, content)
-        logger.info("send result: {}".format(result))
+        log.info("send result: {}".format(result))
         return result

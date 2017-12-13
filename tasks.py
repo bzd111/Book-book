@@ -1,8 +1,8 @@
 # coding: utf-8
+import logging
 from __future__ import absolute_import
 
 import redis
-from celery.utils.log import get_task_logger
 
 from .celery import app
 from .utils import parser_url, parser_article
@@ -10,7 +10,7 @@ from .config import (URLS_DICT, REDIS_DB, REDIS_PORT, REDIS_HOST)
 
 cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
-log = get_task_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 @app.task
