@@ -26,7 +26,7 @@ def check():
         else:
             cache_url, IS_SEND = cache.hmget(name, ["url", "send"])
             log.info("Before cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
-            IS_SEND = int(True if IS_SEND else False)
+            IS_SEND = int(True if int(IS_SEND) else False)
             log.info("After cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
             if cache_url != all_url and IS_SEND:
                 # cache.set(name, all_url)
