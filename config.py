@@ -79,7 +79,7 @@ LOGGING = {
             'propagate': False,
         },
         'utils': {
-            'handlers': ['console', 'tasks'],
+            'handlers': ['console', 'utils'],
             'level': LOG_LEVEL,
             'propagate': False,
         },
