@@ -31,7 +31,7 @@ ARTICLES_DICT = {
 }
 
 REDIS_DB = 0
-REDIS_HOST = 'localhost'
+REDIS_HOST = 'redis'
 REDIS_PORT = 6379
 
 LOG_LEVEL = 'DEBUG' if os.getenv('BOOK_DEBUG') else 'INFO'

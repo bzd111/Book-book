@@ -1,0 +1,10 @@
+web:
+    build: .
+    command: celery  -B -A Book-book worker -l info
+    volumes:
+        - .:/Book-book
+    links:
+        - redis
+
+redis:
+    image: redis
