@@ -39,3 +39,5 @@ def check():
                     result = 0
                 log.info("result: {}".format(result))
                 cache.hset(name, "send", result)
+            elif not IS_SEND and cache_url != all_url:
+                cache.expire(name, 60 * 60 * 24 * 2)
