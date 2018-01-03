@@ -1,43 +1,29 @@
 #!/usr/bin python
 # -*- coding: utf-8 -*-
-import os
-import smtplib
 import logging
 import logging.handlers
 from urlparse import urljoin
-from email.header import Header
-from email.mime.text import MIMEText
 
+import yagmail
 import requests
 from lxml import etree
 from requests import ReadTimeout
 from fake_useragent import UserAgent
 
 from .config import (mail_to_list, mail_host, mail_user,
-                     mail_pass, mail_postfix, ARTICLES_DICT,
-                     YUAN_URL, SHENG_URL_1, YI_URL_1)
+                     mail_pass, ARTICLES_DICT, YUAN_URL,
+                     SHENG_URL_1, YI_URL_1)
 
 TIMEOUT = 5
 
 log = logging.getLogger("utils")
 log.info("utils.name: {}".format(__name__))
 
-def send_mail(to_list, sub, content):
-    me = "<" + mail_user + "@" + mail_postfix + ">"
-    msg = MIMEText(content, _subtype="plain", _charset='utf-8')
-    msg['Subject'] = Header(sub, 'utf-8')
-    msg['From'] = mail_user
-    msg['To'] = ";".join(to_list)
-
-    log.info("msg")
+def send_mail(to_list, title, content):
     log.info("{}, {}, {}".format(mail_user, mail_pass, mail_host))
     try:
-        server = smtplib.SMTP()
-        server.connect(mail_host)
-        server.login(mail_user, mail_pass)
-        server.sendmail(me, to_list, msg.as_string())
-        server.close()
-        log.info("send success: {}".format(1))
+        email = yagmail.SMTP(user=mail_user , password=mail_pass, host=mail_host)
+        email.send(to_list, subject=[title, "✧(≖ ◡ ≖✿)"], contents=content)
         return 1
     except Exception as e:
         log.exception("send error")
@@ -107,7 +93,7 @@ def parser_article(url, name):
         content = map(lambda x: x.encode('utf-8'), content)
         content = map(lambda x: x.replace("\u3000\u3000", ""), content)
         content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
-        content = '\n'.join(content)
+        # content = '\n'.join(content)
         if "正在手打中" in content:
             log.info("正在手打中,尴尬")
             return False
