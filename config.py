@@ -4,6 +4,7 @@ import os
 import sys
 import logging.config
 
+
 ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 LOGS_DIR = os.path.join(ROOT_PATH, 'logs')
 
