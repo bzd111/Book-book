@@ -29,16 +29,18 @@ def check():
             IS_SEND = int(True if int(eval(IS_SEND)) else False)
             log.info("After cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
             if cache_url != all_url and IS_SEND:
-                # cache.set(name, all_url)
+                # newest url
                 cache.hset(name, "url", all_url)
                 result = parser_article(all_url, name)
                 cache.hset(name, "send", result)
             elif not IS_SEND and cache_url == all_url:
+                # send fail
                 result = parser_article(cache_url, name)
                 if result == "None" or result == None:
                     result = 0
                 log.info("result: {}".format(result))
                 cache.hset(name, "send", result)
             elif not IS_SEND and cache_url != all_url:
+                # not send and not newest url
                 if cache.ttl(name) < 0:
                     cache.expire(name, 60 * 60 * 12)
