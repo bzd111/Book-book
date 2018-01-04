@@ -2,12 +2,11 @@ from __future__ import absolute_import
 import os
 from celery import Celery
 
-BASENAME = os.path.basename(__file__)
-app = Celery(BASENAME, include=['{}.tasks'.format(BASENAME)])
+DIRNAME = os.path.dirname(os.path.abspath("__file__"))
+app = Celery(DIRNAME, include=['{}.tasks'.format(DIRNAME)])
 
-app.config_from_object('{}.celeryconfig'.format(BASENAME))
+app.config_from_object('{}.celeryconfig'.format(DIRNAME))
 
 
 if __name__ == "__main__":
-
     app.start()
