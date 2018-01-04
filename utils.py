@@ -93,11 +93,10 @@ def parser_article(url, name):
         content = map(lambda x: x.encode('utf-8'), content)
         content = map(lambda x: x.replace("\u3000\u3000", ""), content)
         content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
-        # content = '\n'.join(content)
-        if "正在手打中" in content:
+        content_str = '\n'.join(content)
+        if "正在手打中" in content_str:
             log.info("正在手打中,尴尬")
             return False
-        # a = send_mail(mail_to_list, title, content)
         result = send_mail(mail_to_list, title, content)
         log.info("send result: {}".format(result))
         return result
