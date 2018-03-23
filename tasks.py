@@ -10,37 +10,25 @@ from .config import (URLS_DICT, REDIS_DB, REDIS_PORT, REDIS_HOST)
 
 cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
-log = logging.getLogger("tasks")
-log.info("tasks.name: {}".format(__name__))
+log = logging.getLogger('tasks')
+log.info('tasks.name: {}'.format(__name__))
 
 @app.task
 def check():
     for name, url in URLS_DICT.items():
-        all_url = parser_url(url)
-        if url == all_url:
+        latest_url = parser_url(url)
+        if url == latest_url:
             return
-        if cache.hmget(name, ['url', 'send']) == [None, None]:
-            cache.hmset(name, {"url": all_url, "send": 0})
-            result = parser_article(all_url, name)
-            cache.hset(name, "send", result)
-        else:
-            cache_url, IS_SEND = cache.hmget(name, ["url", "send"])
-            log.info("Before cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
-            IS_SEND = int(True if int(eval(IS_SEND)) else False)
-            log.info("After cache_url: {}, IS_SEND: {}".format(cache_url, IS_SEND))
-            if cache_url != all_url and IS_SEND:
-                # newest url
-                cache.hset(name, "url", all_url)
-                result = parser_article(all_url, name)
-                cache.hset(name, "send", result)
-            elif not IS_SEND and cache_url == all_url:
-                # send fail
-                result = parser_article(cache_url, name)
-                if result == "None" or result == None:
-                    result = 0
-                log.info("result: {}".format(result))
-                cache.hset(name, "send", result)
-            elif not IS_SEND and cache_url != all_url:
-                # not send and not newest url
-                if cache.ttl(name) < 0:
-                    cache.expire(name, 60 * 60 * 12)
+        cache_url, IS_SEND = cache.hmget(name, ['url', 'send'])
+        log.info('Before cache_url: {}, IS_SEND: {}'.format(cache_url, IS_SEND))
+        IS_SEND = int(True if int(eval(IS_SEND)) else False)
+        log.info('After cache_url: {}, IS_SEND: {}'.format(cache_url, IS_SEND))
+        if cache_url == None and IS_SEND == None:
+            result = parser_article(latest_url, name)
+            cache.hmset(name, {'url': latest_url, 'send': result})
+        elif cache_url != latest_url and not IS_SEND:
+            result = parser_article(cache_url, name)
+            cache.hset(name, 'send', result)
+        elif cache_url == latest_url and not IS_SEND:
+            result = parser_article(latest_url, name)
+            cache.hset(name, 'send', result)

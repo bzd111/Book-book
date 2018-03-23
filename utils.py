@@ -24,10 +24,10 @@ def send_mail(to_list, title, content):
     try:
         email = yagmail.SMTP(user=mail_user , password=mail_pass, host=mail_host)
         email.send(to_list, subject=[title, "✧(≖ ◡ ≖✿)"], contents=content)
-        return 1
+        return True
     except Exception as e:
-        log.exception("send error")
-        return 0
+        log.exception("send error: {}".format(e.message))
+        return False
 
 
 def get_user_agent():
@@ -72,7 +72,7 @@ def parser_url(url):
             else:
                 url_for = tree.xpath('//div[@id="list"]/dl/dd/a/@href')[-7]
     except IndexError as e:
-        log.error("parser url error: {}".format(e))
+        log.exception("parser url error: {}".format(e))
     finally:
         return urljoin(url, url_for)
 
@@ -85,7 +85,7 @@ def parser_article(url, name):
         title = tree.xpath('//div[@class="bookname"]/h1/text()')
         content = tree.xpath('//div[@id="content"]/text()')
     except Exception as e:
-        print('parser_article', e)
+        log.exception('parser_article', e.message)
     if title and content:
         title = title[0].encode('utf-8')
         title = ARTICLES_DICT[name] + title
