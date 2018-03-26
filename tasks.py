@@ -21,7 +21,7 @@ def check():
             return
         cache_url, IS_SEND = cache.hmget(name, ['url', 'send'])
         log.info('Before cache_url: {}, IS_SEND: {}'.format(cache_url, IS_SEND))
-        if cache_url == 'None' and IS_SEND == 'None':
+        if not cache_url and not IS_SEND:
             result = parser_article(latest_url, name)
             cache.hmset(name, {'url': latest_url, 'send': result})
         elif cache_url != latest_url and IS_SEND == 'False':
