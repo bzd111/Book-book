@@ -109,4 +109,4 @@ logging.config.dictConfig(LOGGING)
 try:
     from local_settings import *  # noqa
 except ImportError:
-    pass
+    from settings import  * # noqa
