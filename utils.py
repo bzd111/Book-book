@@ -11,8 +11,7 @@ from requests import ReadTimeout
 from fake_useragent import UserAgent
 
 from .config import (mail_to_list, mail_host, mail_user,
-                     mail_pass, ARTICLES_DICT, YUAN_URL,
-                     SHENG_URL_1, YI_URL_1)
+                     mail_pass, ARTICLES_DICT)
 
 TIMEOUT = 5
 
