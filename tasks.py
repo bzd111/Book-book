@@ -24,12 +24,15 @@ def check():
         if not cache_url and not IS_SEND:
             result = parser_article(latest_url, name)
             cache.hmset(name, {'url': latest_url, 'send': result})
-        elif cache_url != latest_url and IS_SEND == 'False':
-            result = parser_article(cache_url, name)
-            if result:
-                cache.hmset(name, {'url': latest_url,'send': 'False'})
         elif cache_url == latest_url and IS_SEND == 'False':
             result = parser_article(latest_url, name)
             cache.hset(name, 'send', result)
-
+        elif cache_url != latest_url:
+            if not IS_SEND:
+                result = parser_article(cache_url, name)
+                if result:
+                    cache.hmset(name, {'url': latest_url,'send': 'False'})
+            else:
+                result = parser_article(latest_url, name)
+                cache.hmset(name, {'url': latest_url, 'send': result})
         log.info('After cache_url: {}, IS_SEND: {}'.format(cache_url, IS_SEND))

@@ -5,6 +5,8 @@ web:
         - .:/Book-book
     links:
         - redis
+    container_name: book
 
 redis:
     image: redis
+    container_name: database
