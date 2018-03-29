@@ -8,21 +8,21 @@ import logging.config
 ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 LOGS_DIR = os.path.join(ROOT_PATH, 'logs')
 
-YI_URL = "http://www.biquge.cc/html/9/9378/"
+SHENG_URL = "http://www.biquge.cc/html/156/156129/"
 YUAN_URL_1 = "http://www.biquge.cc/html/0/291/"
 FEI_URL = "http://www.biquge.cc/html/139/139744/"
 
-YI_URL_1 = "http://www.qu.la/book/16431/"
+SHENG_URL_1 = "http://www.qu.la/book/24868/"
 YUAN_URL = "http://www.qu.la/book/3137/"
 
 URLS_DICT = {
-    "yi_url": YI_URL,
+    "sheng_url": SHENG_URL,
     "yuan_url": YUAN_URL,
     "fei_url": FEI_URL
 }
 
 ARTICLES_DICT = {
-    'yi_url': "一念永恒  ",
+    'sheng_url': "圣墟  ",
     'yuan_url': "元尊",
     "fei_url": "飞剑问道"
 }

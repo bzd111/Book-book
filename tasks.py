@@ -24,7 +24,7 @@ def check():
         if not cache_url and not IS_SEND:
             result = parser_article(latest_url, name)
             cache.hmset(name, {'url': latest_url, 'send': result})
-        elif cache_url == latest_url and IS_SEND == 'False':
+        elif cache_url == latest_url and IS_SEND != 'True':
             result = parser_article(latest_url, name)
             cache.hset(name, 'send', result)
         elif cache_url != latest_url:
