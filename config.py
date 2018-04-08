@@ -25,7 +25,8 @@ URLS_DICT = {
 ARTICLES_DICT = {
     'sheng_url': '圣墟  ',
     'yuan_url': '元尊',
-    'fei_url': '飞剑问道'
+    'fei_url': '飞剑问道',
+    'dian_url': '点道为止'
 }
 
 REDIS_DB = 0
