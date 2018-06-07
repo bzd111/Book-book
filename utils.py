@@ -7,7 +7,7 @@ from urlparse import urljoin
 import yagmail
 import requests
 from lxml import etree
-from requests import ReadTimeout
+from requests import Timeout
 from fake_useragent import UserAgent
 
 from .config import (mail_to_list, mail_host, mail_user,
@@ -44,7 +44,7 @@ def fetch(url, retry=0):
         if retry < 3:
             return fetch(url, retry=retry + 1)
         raise
-    except ReadTimeout:
+    except Timeout:
         mydict = vars()
         standby_url = mydict.get(mydict.keys()[mydict.values().index('b')] + '_1')
         return s.get(standby_url, timeout=TIMEOUT)

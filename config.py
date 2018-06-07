@@ -14,19 +14,22 @@ FEI_URL = 'http://www.biquge.cc/html/139/139744/'
 DIAN_URL = 'https://www.biquge.cc/html/4/4675/'
 SHENG_URL_1 = 'http://www.qu.la/book/24868/'
 YUAN_URL = 'http://www.qu.la/book/3137/'
+SAN_URL = 'https://www.biquge.cc/html/3/3815/'
 
 URLS_DICT = {
     'sheng_url': SHENG_URL,
     'yuan_url': YUAN_URL,
     'fei_url': FEI_URL,
-    'dian_url': DIAN_URL
+    'dian_url': DIAN_URL,
+    'san_url': SAN_URL
 }
 
 ARTICLES_DICT = {
     'sheng_url': '圣墟  ',
     'yuan_url': '元尊',
     'fei_url': '飞剑问道',
-    'dian_url': '点道为止'
+    'dian_url': '点道为止',
+    'san_url': '三寸人间'
 }
 
 REDIS_DB = 0
