@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import
 import logging
+import os
 
 import redis
 
@@ -13,26 +14,20 @@ cache = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 log = logging.getLogger('tasks')
 log.info('tasks.name: {}'.format(__name__))
 
+
 @app.task
 def check():
     for name, url in URLS_DICT.items():
         latest_url = parser_url(url)
         if url == latest_url:
             return
-        cache_url, IS_SEND = cache.hmget(name, ['url', 'send'])
-        log.info('Before cache_url: {}, IS_SEND: {}'.format(cache_url, IS_SEND))
-        if not cache_url and not IS_SEND:
+        cache_url = cache.lrange(name, -10, -1)
+        if not cache_url or deal_url(latest_url) not in cache_url:
             result = parser_article(latest_url, name)
-            cache.hmset(name, {'url': latest_url, 'send': result})
-        elif cache_url == latest_url and IS_SEND != 'True':
-            result = parser_article(latest_url, name)
-            cache.hset(name, 'send', result)
-        elif cache_url != latest_url:
-            if not IS_SEND:
-                result = parser_article(cache_url, name)
-                if result:
-                    cache.hmset(name, {'url': latest_url,'send': 'False'})
-            else:
-                result = parser_article(latest_url, name)
-                cache.hmset(name, {'url': latest_url, 'send': result})
-        log.info('After cache_url: {}, IS_SEND: {}'.format(cache_url, IS_SEND))
+            if result:
+                cache.rpush(name, deal_url(latest_url))
+
+
+def deal_url(url):
+    url = url if not url.endswith('/') else url[:-1]
+    return os.path.basename(url)
