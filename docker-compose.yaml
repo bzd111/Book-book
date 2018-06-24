@@ -1,12 +1,16 @@
-web:
-    build: .
-    command: celery  -B -A Book-book worker -l info
-    volumes:
-        - .:/Book-book
-    links:
+version: '3'
+services:
+  app:
+      build: .
+      command: celery  -B -A Book-book worker -l info
+      volumes:
+          - .:/Book-book
+      links:
+          - redis
+      container_name: book
+      depends_on:
         - redis
-    container_name: book
 
-redis:
-    image: redis
-    container_name: database
+  redis:
+      image: "redis:alpine"
+      container_name: database
