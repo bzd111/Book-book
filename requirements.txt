@@ -1,6 +1,6 @@
-celery==4.0.2
-fake-useragent==0.1.10
+celery>=4.2.0rc4
+fake-useragent==0.1.11
 lxml==3.8.0
-redis==2.10.5
-requests==2.18.1
+redis>=3.2.0
+requests>=2.20.0
 yagmail==0.10.209
