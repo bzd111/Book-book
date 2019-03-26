@@ -17,7 +17,8 @@ log.info('tasks.name: {}'.format(__name__))
 
 @app.task
 def check():
-    for name, url in URLS_DICT.items():
+    for name, info in URLS_DICT.items():
+        url = info[0]
         latest_url = parser_url(url)
         if url == latest_url:
             return

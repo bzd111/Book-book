@@ -15,21 +15,17 @@ DIAN_URL = 'https://www.biquge.cc/html/4/4675/'
 SHENG_URL_1 = 'http://www.qu.la/book/24868/'
 YUAN_URL = 'http://www.qu.la/book/3137/'
 SAN_URL = 'https://www.biquge.cc/html/3/3815/'
+TIAN_URL = 'https://www.qu.la/book/646/'
+LONG_URL = 'https://www.qu.la/book/87702/'
 
 URLS_DICT = {
-    'sheng_url': SHENG_URL,
-    'yuan_url': YUAN_URL,
-    'fei_url': FEI_URL,
-    'dian_url': DIAN_URL,
-    'san_url': SAN_URL
-}
-
-ARTICLES_DICT = {
-    'sheng_url': '圣墟  ',
-    'yuan_url': '元尊',
-    'fei_url': '飞剑问道',
-    'dian_url': '点道为止',
-    'san_url': '三寸人间'
+    'sheng_url': (SHENG_URL, '圣墟 '),
+    'yuan_url': (YUAN_URL, '元尊'),
+    'fei_url': (FEI_URL, '飞剑问道'),
+    'dian_url': (DIAN_URL, '点道为止'),
+    'san_url': (SAN_URL, '三寸人间'),
+    'tian_url': (TIAN_URL, '天下第九'),
+    'long_url': (LONG_URL, '龙族Ⅴ:悼亡者的归来')
 }
 
 REDIS_DB = 0
@@ -44,7 +40,8 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format':
-            '[%(levelname)s][%(asctime)s][%(module)s][%(process)d] %(message)s'  # flake8: noqa
+            # flake8: noqa
+            '[%(levelname)s][%(asctime)s][%(module)s][%(process)d] %(message)s'
         },
         'simple': {
             'format': '[%(levelname)s] %(message)s'
@@ -98,7 +95,7 @@ def exists(path):
     return True
 
 
-def makedirs(name, mode=0777):
+def makedirs(name, mode=0o777):
     if not exists(name):
         os.makedirs(name, mode)
 
@@ -110,4 +107,4 @@ logging.config.dictConfig(LOGGING)
 try:
     from local_settings import *  # noqa
 except ImportError:
-    from settings import  * # noqa
+    from settings import *  # noqa

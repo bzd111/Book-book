@@ -11,9 +11,9 @@ from requests import Timeout
 from fake_useragent import UserAgent
 
 from .config import (mail_to_list, mail_host, mail_user,
-                     mail_pass, ARTICLES_DICT)
+                     mail_pass, URLS_DICT)
 
-TIMEOUT = 5
+TIMEOUT = 50
 
 log = logging.getLogger("utils")
 log.info("utils.name: {}".format(__name__))
@@ -30,7 +30,7 @@ def send_mail(to_list, title, content):
 
 
 def get_user_agent():
-    ua = UserAgent()
+    ua = UserAgent(cache=False)
     return ua.random
 
 
@@ -87,7 +87,7 @@ def parser_article(url, name):
         log.exception('parser_article', e.message)
     if title and content:
         title = title[0].encode('utf-8')
-        title = ARTICLES_DICT[name] + title
+        title = URLS_DICT[name][1] + title
         content = tree.xpath('//div[@id="content"]/text()')
         content = map(lambda x: x.encode('utf-8'), content)
         content = map(lambda x: x.replace("\u3000\u3000", ""), content)
