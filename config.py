@@ -4,9 +4,10 @@ import os
 import sys
 import logging.config
 
-
 ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 LOGS_DIR = os.path.join(ROOT_PATH, 'logs')
+
+DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 
 SHENG_URL = 'http://www.biquge.cc/html/156/156129/'
 YUAN_URL_1 = 'http://www.biquge.cc/html/0/291/'
@@ -102,7 +103,6 @@ def makedirs(name, mode=0o777):
 
 makedirs(LOGS_DIR)
 logging.config.dictConfig(LOGGING)
-
 
 try:
     from local_settings import *  # noqa

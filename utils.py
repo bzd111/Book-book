@@ -10,18 +10,19 @@ from lxml import etree
 from requests import Timeout
 from fake_useragent import UserAgent
 
-from .config import (mail_to_list, mail_host, mail_user,
-                     mail_pass, URLS_DICT)
+from .config import (mail_to_list, mail_host, mail_user, mail_pass, URLS_DICT)
 
 TIMEOUT = 50
 
 log = logging.getLogger("utils")
 log.info("utils.name: {}".format(__name__))
 
+
 def send_mail(to_list, title, content):
     log.info("{}, {}, {}".format(mail_user, mail_pass, mail_host))
     try:
-        email = yagmail.SMTP(user=mail_user , password=mail_pass, host=mail_host)
+        email = yagmail.SMTP(
+            user=mail_user, password=mail_pass, host=mail_host)
         email.send(to_list, subject=[title, "✧(≖ ◡ ≖✿)"], contents=content)
         return True
     except Exception as e:
@@ -30,14 +31,14 @@ def send_mail(to_list, title, content):
 
 
 def get_user_agent():
-    ua = UserAgent(cache=False)
+    # ua = UserAgent(verify_ssl=False)
+    ua = UserAgent(use_cache_server=False)
     return ua.random
 
 
 def fetch(url, retry=0):
     s = requests.Session()
-    s.headers.update({'user-agent': get_user_agent(),
-                      'referer': url})
+    s.headers.update({'user-agent': get_user_agent(), 'referer': url})
     try:
         return s.get(url, timeout=TIMEOUT)
     except requests.exceptions.RequestException:
@@ -46,7 +47,8 @@ def fetch(url, retry=0):
         raise
     except Timeout:
         mydict = vars()
-        standby_url = mydict.get(mydict.keys()[mydict.values().index('b')] + '_1')
+        standby_url = mydict.get(mydict.keys()[mydict.values().index('b')] +
+                                 '_1')
         return s.get(standby_url, timeout=TIMEOUT)
 
 

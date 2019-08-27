@@ -1,6 +1,7 @@
 celery>=4.2.0rc4
-fake-useragent==0.1.11
 lxml==3.8.0
 redis>=3.2.0
 requests>=2.20.0
 yagmail==0.10.209
+git+https://github.com/dongweiming/fake-useragent.git@master#egg=fake-useragent
+
