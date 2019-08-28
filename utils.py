@@ -8,7 +8,7 @@ import yagmail
 import requests
 from lxml import etree
 from requests import Timeout
-from fake_useragent import UserAgent
+import fake_useragent
 
 from .config import (mail_to_list, mail_host, mail_user, mail_pass, URLS_DICT)
 
@@ -31,8 +31,8 @@ def send_mail(to_list, title, content):
 
 
 def get_user_agent():
-    # ua = UserAgent(verify_ssl=False)
-    ua = UserAgent(use_cache_server=False)
+    fake_useragent.settings.DATA_DB = '/opt/Book-book/fake_useragent.json'
+    ua = fake_useragent.UserAgent(cache=True)
     return ua.random
 
 
