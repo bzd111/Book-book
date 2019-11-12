@@ -1,11 +1,13 @@
 #!/usr/bin python
 # -*- coding: utf-8 -*-
+import logging.config
 import os
 import sys
-import logging.config
+from pathlib import Path
 
-ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
-LOGS_DIR = os.path.join(ROOT_PATH, 'logs')
+# ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
+ROOT_PATH = Path.cwd()
+LOGS_DIR = ROOT_PATH / 'logs'
 
 DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 
@@ -20,14 +22,15 @@ TIAN_URL = 'https://www.qu.la/book/646/'
 LONG_URL = 'https://www.qu.la/book/87702/'
 
 URLS_DICT = {
-    'sheng_url': (SHENG_URL, '圣墟 '),
-    'yuan_url': (YUAN_URL, '元尊'),
-    'fei_url': (FEI_URL, '飞剑问道'),
-    'dian_url': (DIAN_URL, '点道为止'),
-    'san_url': (SAN_URL, '三寸人间'),
-    'tian_url': (TIAN_URL, '天下第九'),
-    'long_url': (LONG_URL, '龙族Ⅴ:悼亡者的归来')
+    SHENG_URL: '圣墟',
+    YUAN_URL: '元尊',
+    DIAN_URL: '点道为止',
+    SAN_URL: '三寸人间',
+    TIAN_URL: '天下第九',
+    LONG_URL: '龙族Ⅴ:悼亡者的归来',
 }
+
+SLEEP_TIME = 5
 
 REDIS_DB = 0
 REDIS_HOST = 'redis'
@@ -44,16 +47,14 @@ LOGGING = {
             # flake8: noqa
             '[%(levelname)s][%(asctime)s][%(module)s][%(process)d] %(message)s'
         },
-        'simple': {
-            'format': '[%(levelname)s] %(message)s'
-        },
+        'simple': {'format': '[%(levelname)s] %(message)s'},
     },
     'handlers': {
         'console': {
             'level': LOG_LEVEL,
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-            'stream': sys.stdout
+            'stream': sys.stdout,
         },
         'tasks': {
             'level': LOG_LEVEL,
@@ -70,7 +71,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'verbose',
-        }
+        },
     },
     'loggers': {
         'tasks': {
@@ -83,7 +84,7 @@ LOGGING = {
             'level': LOG_LEVEL,
             'propagate': False,
         },
-    }
+    },
 }
 
 
@@ -107,4 +108,4 @@ logging.config.dictConfig(LOGGING)
 try:
     from local_settings import *  # noqa
 except ImportError:
-    from settings import *  # noqa
+    pass
