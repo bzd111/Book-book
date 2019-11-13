@@ -83,9 +83,7 @@ def get_tree(resp):
 async def parser_urls(urls, loop=None):
     if not loop:
         loop = get_event_loop()
-    print(123)
     resps: Dict = await get_resps(urls)
-    print(123123)
     lastest_urls = []
     for resp in resps:
         url, text = resp
