@@ -11,16 +11,10 @@ mypy = "*"
 pytest = "*"
 
 [packages]
-celery = ">=4.2.0rc4"
 lxml = "*"
-redis = ">=3.2.0"
-requests = ">=2.20.0"
-yagmail = "==0.10.209"
 fake-useragent = {git = "https://github.com/dongweiming/fake-useragent.git",ref = "master"}
 aiohttp = "*"
 aiosmtplib = "*"
-aiorwlock = "*"
-async-timeout = "*"
 
 [requires]
 python_version = "3.7"

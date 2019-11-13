@@ -63,10 +63,14 @@ async def fetch(session: ClientSession, url, retry=0):
     #         return await fetch(session, url, retry=retry + 1)
     #     raise
     # async with session.get(url, headers=headers, timeout=TIMEOUT) as r:
-    async with session.get(url, timeout=TIMEOUT) as r:
-        log.info(f'fetch url: {url}')
-        resp = await r.text()
-        return (url, resp)
+    try:
+        async with session.get(url, timeout=TIMEOUT) as r:
+            log.info(f'fetch url: {url}')
+            resp = await r.text()
+            return (url, resp)
+    except asyncio.TimeoutError:
+        if retry < 3:
+            await fetch(session, url, retry=retry + 1)
 
 
 async def get_resps(urls):
