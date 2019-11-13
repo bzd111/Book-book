@@ -68,7 +68,7 @@ async def fetch(session: ClientSession, url, retry=0):
             log.info(f'fetch url: {url}')
             resp = await r.text()
             return (url, resp)
-    except asyncio.TimeoutError:
+    except (ConnectionResetError, asyncio.TimeoutError):
         if retry < 3:
             await fetch(session, url, retry=retry + 1)
 
