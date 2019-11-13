@@ -1,5 +1,3 @@
-#!/usr/bin python
-# -*- coding: utf-8 -*-
 import asyncio
 import json
 import logging
@@ -8,7 +6,7 @@ from asyncio.events import get_event_loop
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor  # noqa
 from email.message import EmailMessage
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Union
 from urllib.parse import urljoin
 
 import aiohttp
@@ -27,16 +25,20 @@ log.info("utils.name: {}".format(__name__))
 
 
 async def send_mail(title, content):
-    log.info("{}, {}, {}".format(mail_user, mail_pass, mail_host))
+    log.info("send email: {}, {}, {}".format(mail_user, mail_pass, mail_host))
     try:
         message = EmailMessage()
         message["From"] = mail_user
         message["To"] = mail_to_list
-        # message["Subject"] = ' '.join([title, "✧(≖ ◡ ≖✿)"])
         message["Subject"] = title + "✧(≖ ◡ ≖✿)"
         message.set_content(content)
         await aiosmtplib.send(
-            message, hostname=mail_host, port=mail_port, use_tls=True, password=mail_pass, username=mail_user
+            message,
+            hostname=mail_host,
+            port=mail_port,
+            use_tls=True,
+            password=mail_pass,
+            username=mail_user,
         )
     except Exception as e:
         log.exception("send error: {}".format(e))
@@ -49,8 +51,9 @@ def get_user_agent():
 
 
 async def fetch(session: ClientSession, url, retry=0):
-    # log.info("parser_article: {}, {}".format(url, name))
-    # headers = {'user-agent': get_user_agent(), 'referer': url}
+    # loop = asyncio.get_event_loop()
+    # agent = await loop.run_in_executor(None, get_user_agent)
+    # headers = {'user-agent': agent}
     # headers = {'user-agent': get_user_agent()}
     # try:
     #     r = await session.get(url, headers=headers, timeout=TIMEOUT)
@@ -59,8 +62,9 @@ async def fetch(session: ClientSession, url, retry=0):
     #     if retry < 3:
     #         return await fetch(session, url, retry=retry + 1)
     #     raise
-    async with session.get(url) as r:
-        # async with session.get(url, headers=headers, timeout=TIMEOUT) as r:
+    # async with session.get(url, headers=headers, timeout=TIMEOUT) as r:
+    async with session.get(url, timeout=TIMEOUT) as r:
+        log.info(f'fetch url: {url}')
         resp = await r.text()
         return (url, resp)
 
@@ -79,7 +83,9 @@ def get_tree(resp):
 async def parser_urls(urls, loop=None):
     if not loop:
         loop = get_event_loop()
+    print(123)
     resps: Dict = await get_resps(urls)
+    print(123123)
     lastest_urls = []
     for resp in resps:
         url, text = resp
@@ -99,12 +105,13 @@ async def parser_urls(urls, loop=None):
 async def parser_articles(urls, loop=None):
     if not loop:
         loop = asyncio.get_event_loop()
-    title = content = None
     lastest_urls = await parser_urls(urls)
     diff = await loop.run_in_executor(None, filter_url, 'urls.json', lastest_urls)
     resps = await get_resps(diff)
+    title = content = None
     for resp in resps:
         url, text = resp
+        name = await loop.run_in_executor(None, get_url, url)
         parse = await loop.run_in_executor(None, get_tree, text)
         try:
             title = parse.xpath('//div[@class="bookname"]/h1/text()')
@@ -112,30 +119,24 @@ async def parser_articles(urls, loop=None):
         except Exception as e:
             log.exception('parser_article', e)
         if title and content:
-            # title = title[0].encode('utf-8')
-            # title = URLS_DICT[url] + title
             title = title
             content = parse.xpath('//div[@id="content"]/text()')
-            # content = map(lambda x: x.encode('utf-8'), content)
             content = map(lambda x: x.replace("\u3000\u3000", ""), content)
             content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
-            # content_str = '\n'.join(list(content))
             content_str = '\n'.join(content)
             if "正在手打中" in content_str:
                 log.info("正在手打中,尴尬")
                 return False
-            result = await send_mail(title[0], content_str)
+            result = await send_mail(name + title[0], content_str)
             log.info("send result: {}".format(result))
-            # return result
 
 
 def filter_url(file, new):
-    # diff = set()
     fpath = Path.cwd() / file
     if not fpath.exists():
         fpath.touch()
     with open(fpath, 'r') as f:
-        data = f.readline()
+        data = f.read()
         if not data:
             old = set()
         else:
@@ -144,3 +145,10 @@ def filter_url(file, new):
     with open(fpath, 'w') as f:
         json.dump(new, f)
     return list(diff)
+
+
+def get_url(target: str) -> Union[str]:
+    for url in URLS_DICT.keys():
+        if target.startswith(url):
+            return URLS_DICT[url]
+    return ''

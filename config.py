@@ -14,10 +14,10 @@ DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 SHENG_URL = 'http://www.biquge.cc/html/156/156129/'
 YUAN_URL_1 = 'http://www.biquge.cc/html/0/291/'
 FEI_URL = 'http://www.biquge.cc/html/139/139744/'
-DIAN_URL = 'https://www.biquge.cc/html/4/4675/'
+DIAN_URL = 'https://www.gu.la/html/4/4675/'
 SHENG_URL_1 = 'http://www.qu.la/book/24868/'
 YUAN_URL = 'http://www.qu.la/book/3137/'
-SAN_URL = 'https://www.biquge.cc/html/3/3815/'
+SAN_URL = 'https://www.gu.la/html/3/3815/'
 TIAN_URL = 'https://www.qu.la/book/646/'
 LONG_URL = 'https://www.qu.la/book/87702/'
 
