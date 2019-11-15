@@ -11,18 +11,16 @@ LOGS_DIR = ROOT_PATH / 'logs'
 
 DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 
-SHENG_URL = 'http://www.biquge.cc/html/156/156129/'
-YUAN_URL_1 = 'http://www.biquge.cc/html/0/291/'
+SHENG_URL = 'https://www.qu.la/book/24868/'
 FEI_URL = 'http://www.biquge.cc/html/139/139744/'
-DIAN_URL = 'https://www.gu.la/html/4/4675/'
-SHENG_URL_1 = 'http://www.qu.la/book/24868/'
+DIAN_URL = 'https://www.qu.la/book/242/'
 YUAN_URL = 'http://www.qu.la/book/3137/'
 SAN_URL = 'https://www.gu.la/html/3/3815/'
 TIAN_URL = 'https://www.qu.la/book/646/'
 LONG_URL = 'https://www.qu.la/book/87702/'
 
 URLS_DICT = {
-    SHENG_URL: '圣墟',
+    # SHENG_URL: '圣墟',
     YUAN_URL: '元尊',
     DIAN_URL: '点道为止',
     SAN_URL: '三寸人间',
@@ -31,10 +29,6 @@ URLS_DICT = {
 }
 
 SLEEP_TIME = 5
-
-REDIS_DB = 0
-REDIS_HOST = 'redis'
-REDIS_PORT = 6379
 
 LOG_LEVEL = 'DEBUG' if os.getenv('BOOK_DEBUG') else 'INFO'
 
