@@ -1,7 +1,6 @@
-FROM python:3.7-alpine
+FROM zidy/basic-book:0.1.0
 # FROM python:3.7
 ADD . /opt/book
 WORKDIR /opt/book
-RUN apk add --no-cache bash git openssh gcc musl-dev libxml2-dev libxslt-dev
-RUN pip install -r /opt/book/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
 ENTRYPOINT ["python", "-m", "main"]
