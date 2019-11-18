@@ -7,9 +7,7 @@ from utils import filter_url
 @pytest.fixture
 def remove_json():
     fpath = ROOT_PATH / 'url.json'
-    print(fpath)
     if fpath.exists():
-        print('-----ok')
         fpath.unlink()
 
 

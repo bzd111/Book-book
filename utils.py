@@ -73,8 +73,10 @@ async def fetch(url, retry=0):
 
 async def get_resps(urls):
     # async with aiohttp.ClientSession() as session:
-    tasks = [fetch(url) for url in urls]
-    return await asyncio.gather(*tasks)
+    if urls:
+        tasks = [fetch(url) for url in urls]
+        return await asyncio.gather(*tasks)
+    return []
 
 
 def get_tree(resp):
@@ -130,6 +132,28 @@ async def parser_articles(urls, loop=None):
             log.info("send result: {}".format(result))
 
 
+async def parser_article(url):
+    loop = asyncio.get_event_loop()
+    name = await loop.run_in_executor(executor, get_url, url)
+    parse = await loop.run_in_executor(executor, get_tree, text)
+    try:
+        title = parse.xpath('//div[@class="bookname"]/h1/text()')
+        content = parse.xpath('//div[@id="content"]/text()')
+    except Exception as e:
+        log.exception('parser_article', e)
+    if title and content:
+        title = title
+        content = parse.xpath('//div[@id="content"]/text()')
+        content = map(lambda x: x.replace("\u3000\u3000", ""), content)
+        content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
+        content_str = '\n'.join(content)
+        if "正在手打中" in content_str:
+            log.info("正在手打中,尴尬")
+            return False
+        result = await send_mail(name + title[0], content_str)
+        log.info("send result: {}".format(result))
+
+
 def filter_url(file, new):
     fpath = Path.cwd() / file
     if not fpath.exists():
@@ -141,8 +165,11 @@ def filter_url(file, new):
         else:
             old = set(json.loads(data))
     diff = set(new) - set(old)
-    with open(fpath, 'w') as f:
-        json.dump(new, f)
+    log.info(f'new: {new}')
+    log.info(f'old: {old}')
+    if diff:
+        with open(fpath, 'w') as f:
+            json.dump(new, f)
     return list(diff)
 
 
