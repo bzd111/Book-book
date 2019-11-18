@@ -1,2 +1,6 @@
 .dockerignore
 .git*
+logs
+tests
+Pipfile
+Pipfile.lock

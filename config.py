@@ -5,7 +5,6 @@ import os
 import sys
 from pathlib import Path
 
-# ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 ROOT_PATH = Path.cwd()
 LOGS_DIR = ROOT_PATH / 'logs'
 
@@ -20,7 +19,7 @@ TIAN_URL = 'https://www.qu.la/book/646/'
 LONG_URL = 'https://www.qu.la/book/87702/'
 
 URLS_DICT = {
-    # SHENG_URL: '圣墟',
+    SHENG_URL: '圣墟',
     YUAN_URL: '元尊',
     DIAN_URL: '点道为止',
     SAN_URL: '三寸人间',
@@ -28,7 +27,7 @@ URLS_DICT = {
     LONG_URL: '龙族Ⅴ:悼亡者的归来',
 }
 
-SLEEP_TIME = 5
+SLEEP_TIME = 10 
 
 LOG_LEVEL = 'DEBUG' if os.getenv('BOOK_DEBUG') else 'INFO'
 

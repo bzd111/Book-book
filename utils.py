@@ -18,7 +18,7 @@ from lxml import html
 from config import mail_port  # type: ignore
 from config import URLS_DICT, mail_host, mail_pass, mail_to_list, mail_user
 
-TIMEOUT = 30
+TIMEOUT = 5
 
 log = logging.getLogger("utils")
 log.info("utils.name: {}".format(__name__))
