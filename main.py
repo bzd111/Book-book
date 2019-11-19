@@ -2,12 +2,14 @@ import asyncio
 import time
 
 from config import SLEEP_TIME, URLS_DICT
-from utils import parser_articles
+from utils import parser_article
 
 
 async def main():
     while True:
-        await parser_articles(list(URLS_DICT.keys()))
+        tasks = [parser_article(name, url) for url, name in URLS_DICT.items()]
+        # await parser_articles(list(URLS_DICT.keys()))
+        await asyncio.wait(tasks)
         await asyncio.sleep(SLEEP_TIME)
     # time.sleep(SLEEP_TIME)
 

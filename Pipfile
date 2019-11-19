@@ -15,6 +15,7 @@ lxml = "*"
 fake-useragent = {git = "https://github.com/dongweiming/fake-useragent.git",ref = "master"}
 aiohttp = "*"
 aiosmtplib = "*"
+aiofiles = "*"
 
 [requires]
 python_version = "3.7"

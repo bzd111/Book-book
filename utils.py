@@ -7,16 +7,16 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor  # noqa
 from email.message import EmailMessage
 from multiprocessing import cpu_count
 from pathlib import Path
-from typing import Dict, Union
 from urllib.parse import urljoin
 
+import aiofiles
 import aiohttp
 import aiosmtplib
 import fake_useragent
 from lxml import html
 
 from config import mail_port  # type: ignore
-from config import URLS_DICT, mail_host, mail_pass, mail_to_list, mail_user
+from config import JSON_FILE, mail_host, mail_pass, mail_to_list, mail_user
 
 TIMEOUT = 5
 
@@ -64,19 +64,16 @@ async def fetch(url, retry=0):
                 # async with session.get(url, headers={}, timeout=TIMEOUT) as r:
                 log.info(f'fetch url: {url}')
                 resp = await r.text()
-                return (url, resp)
+                return resp
     except (aiohttp.ServerDisconnectedError, ConnectionResetError, asyncio.TimeoutError):
         if retry < 3:
             await fetch(url, retry=retry + 1)
         raise
 
 
-async def get_resps(urls):
-    # async with aiohttp.ClientSession() as session:
-    if urls:
-        tasks = [fetch(url) for url in urls]
-        return await asyncio.gather(*tasks)
-    return []
+async def get_resp(url):
+    resp = await fetch(url)
+    return resp
 
 
 def get_tree(resp):
@@ -84,36 +81,32 @@ def get_tree(resp):
     return parse
 
 
-async def parser_urls(urls, loop=None):
+async def parser_url(url, loop=None):
     if not loop:
         loop = get_event_loop()
-    resps: Dict = await get_resps(urls)
-    lastest_urls = []
-    for resp in resps:
-        url, text = resp
-        parse = await loop.run_in_executor(executor, get_tree, text)
-        log.info("parser url: {}".format(url))
-        try:
-            last_urls = parse.xpath('//div[@id="list"]/dl/dd/a/@href')
-            if last_urls:
-                url_for = last_urls[-1]
-                lastest_urls.append(urljoin(url, url_for))
-        except IndexError as e:
-            log.exception("parser url error: {}".format(e))
-    return lastest_urls
+    resp = await get_resp(url)
+    parse = await loop.run_in_executor(executor, get_tree, resp)
+    log.info("parser url: {}".format(url))
+    try:
+        last_urls = parse.xpath('//div[@id="list"]/dl/dd/a/@href')
+        if last_urls:
+            url_for = last_urls[-1]
+            return urljoin(url, url_for)
+    except IndexError as e:
+        log.exception("parser url error: {}".format(e))
 
 
-async def parser_articles(urls, loop=None):
+async def parser_article(name, url, loop=None):
     if not loop:
         loop = asyncio.get_event_loop()
-    lastest_urls = await parser_urls(urls)
-    diff = await loop.run_in_executor(executor, filter_url, 'urls.json', lastest_urls)
-    resps = await get_resps(diff)
-    title = content = None
-    for resp in resps:
-        url, text = resp
-        name = await loop.run_in_executor(executor, get_url, url)
-        parse = await loop.run_in_executor(executor, get_tree, text)
+    lastest_url = await parser_url(url)
+    # TODO compare with last url
+    # diff = await loop.run_in_executor(executor, filter_url, JSON_FILE, lastest_urls)
+    need_update = await filter_url(name, lastest_url)
+    if need_update:
+        resp = await get_resp(lastest_url)
+        # name = await loop.run_in_executor(executor, get_url, url)
+        parse = await loop.run_in_executor(executor, get_tree, resp)
         try:
             title = parse.xpath('//div[@class="bookname"]/h1/text()')
             content = parse.xpath('//div[@id="content"]/text()')
@@ -127,54 +120,39 @@ async def parser_articles(urls, loop=None):
             content_str = '\n'.join(content)
             if "正在手打中" in content_str:
                 log.info("正在手打中,尴尬")
-                return False
+                await parser_article(name, url)
+                await asyncio.sleep(TIMEOUT)
             result = await send_mail(name + title[0], content_str)
             log.info("send result: {}".format(result))
+            # TODO modify last url
+            await save_lastest_url(name, lastest_url)
 
 
-async def parser_article(url):
-    loop = asyncio.get_event_loop()
-    name = await loop.run_in_executor(executor, get_url, url)
-    parse = await loop.run_in_executor(executor, get_tree, text)
-    try:
-        title = parse.xpath('//div[@class="bookname"]/h1/text()')
-        content = parse.xpath('//div[@id="content"]/text()')
-    except Exception as e:
-        log.exception('parser_article', e)
-    if title and content:
-        title = title
-        content = parse.xpath('//div[@id="content"]/text()')
-        content = map(lambda x: x.replace("\u3000\u3000", ""), content)
-        content = map(lambda x: x.replace("\r\n\t\t\t\t", ""), content)
-        content_str = '\n'.join(content)
-        if "正在手打中" in content_str:
-            log.info("正在手打中,尴尬")
-            return False
-        result = await send_mail(name + title[0], content_str)
-        log.info("send result: {}".format(result))
+async def filter_url(name, url):
+    if not JSON_FILE.exists():
+        JSON_FILE.touch()
+        return False
+    async with aiofiles.open(JSON_FILE, mode='r') as f:
+        contents = await f.read()
+        if not contents:
+            return True
+        name_urls = json.loads(contents)
+        last_url = name_urls.get(name)
+        if not last_url:
+            return True
+        if last_url and last_url != url:
+            return True
+    return False
 
 
-def filter_url(file, new):
-    fpath = Path.cwd() / file
-    if not fpath.exists():
-        fpath.touch()
-    with open(fpath, 'r') as f:
-        data = f.read()
-        if not data:
-            old = set()
+async def save_lastest_url(name, url):
+    async with aiofiles.open(JSON_FILE, mode='r') as f:
+        contents = await f.read()
+        if not contents:
+            name_urls = {}
+            name_urls[name] = url
         else:
-            old = set(json.loads(data))
-    diff = set(new) - set(old)
-    log.info(f'new: {new}')
-    log.info(f'old: {old}')
-    if diff:
-        with open(fpath, 'w') as f:
-            json.dump(new, f)
-    return list(diff)
-
-
-def get_url(target: str) -> Union[str]:
-    for url in URLS_DICT.keys():
-        if target.startswith(url):
-            return URLS_DICT[url]
-    return ''
+            name_urls = json.loads(contents)
+    async with aiofiles.open(JSON_FILE, mode='w') as f:
+        name_urls[name] = url
+        await f.write(json.dumps(name_urls))

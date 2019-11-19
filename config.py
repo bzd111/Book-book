@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT_PATH = Path.cwd()
 LOGS_DIR = ROOT_PATH / 'logs'
+JSON_FILE = ROOT_PATH / 'urls.json'
 
 DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 
@@ -27,7 +28,7 @@ URLS_DICT = {
     LONG_URL: '龙族Ⅴ:悼亡者的归来',
 }
 
-SLEEP_TIME = 10 
+SLEEP_TIME = 10
 
 LOG_LEVEL = 'DEBUG' if os.getenv('BOOK_DEBUG') else 'INFO'
 
