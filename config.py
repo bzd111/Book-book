@@ -1,37 +1,34 @@
 #!/usr/bin python
 # -*- coding: utf-8 -*-
+import logging.config
 import os
 import sys
-import logging.config
+from pathlib import Path
 
-ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
-LOGS_DIR = os.path.join(ROOT_PATH, 'logs')
+ROOT_PATH = Path.cwd()
+LOGS_DIR = ROOT_PATH / 'logs'
+JSON_FILE = ROOT_PATH / 'urls.json'
 
 DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 
-SHENG_URL = 'http://www.biquge.cc/html/156/156129/'
-YUAN_URL_1 = 'http://www.biquge.cc/html/0/291/'
+SHENG_URL = 'https://www.qu.la/book/24868/'
 FEI_URL = 'http://www.biquge.cc/html/139/139744/'
-DIAN_URL = 'https://www.biquge.cc/html/4/4675/'
-SHENG_URL_1 = 'http://www.qu.la/book/24868/'
+DIAN_URL = 'https://www.qu.la/book/242/'
 YUAN_URL = 'http://www.qu.la/book/3137/'
-SAN_URL = 'https://www.biquge.cc/html/3/3815/'
+SAN_URL = 'https://www.gu.la/html/3/3815/'
 TIAN_URL = 'https://www.qu.la/book/646/'
 LONG_URL = 'https://www.qu.la/book/87702/'
 
 URLS_DICT = {
-    'sheng_url': (SHENG_URL, '圣墟 '),
-    'yuan_url': (YUAN_URL, '元尊'),
-    'fei_url': (FEI_URL, '飞剑问道'),
-    'dian_url': (DIAN_URL, '点道为止'),
-    'san_url': (SAN_URL, '三寸人间'),
-    'tian_url': (TIAN_URL, '天下第九'),
-    'long_url': (LONG_URL, '龙族Ⅴ:悼亡者的归来')
+    SHENG_URL: '圣墟',
+    YUAN_URL: '元尊',
+    DIAN_URL: '点道为止',
+    SAN_URL: '三寸人间',
+    TIAN_URL: '天下第九',
+    LONG_URL: '龙族Ⅴ:悼亡者的归来',
 }
 
-REDIS_DB = 0
-REDIS_HOST = 'redis'
-REDIS_PORT = 6379
+SLEEP_TIME = 10
 
 LOG_LEVEL = 'DEBUG' if os.getenv('BOOK_DEBUG') else 'INFO'
 
@@ -44,16 +41,14 @@ LOGGING = {
             # flake8: noqa
             '[%(levelname)s][%(asctime)s][%(module)s][%(process)d] %(message)s'
         },
-        'simple': {
-            'format': '[%(levelname)s] %(message)s'
-        },
+        'simple': {'format': '[%(levelname)s] %(message)s'},
     },
     'handlers': {
         'console': {
             'level': LOG_LEVEL,
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-            'stream': sys.stdout
+            'stream': sys.stdout,
         },
         'tasks': {
             'level': LOG_LEVEL,
@@ -70,7 +65,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'verbose',
-        }
+        },
     },
     'loggers': {
         'tasks': {
@@ -83,7 +78,7 @@ LOGGING = {
             'level': LOG_LEVEL,
             'propagate': False,
         },
-    }
+    },
 }
 
 
@@ -107,4 +102,4 @@ logging.config.dictConfig(LOGGING)
 try:
     from local_settings import *  # noqa
 except ImportError:
-    from settings import *  # noqa
+    pass

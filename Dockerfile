@@ -1,6 +1,6 @@
-FROM python:2.7
-ADD . /opt/Book-book
-WORKDIR /opt
-# RUN useradd redis
-# RUN chown redis:redis -R /opt/Book-book
-RUN pip install -r /opt/Book-book/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+FROM zidy/basic-book:0.2.0
+# FROM python:3.7
+ADD . /opt/book
+WORKDIR /opt/book
+
+ENTRYPOINT ["python", "-m", "main"]
