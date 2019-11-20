@@ -60,7 +60,7 @@ async def fetch(url, retry=0):
     headers = {'user-agent': agent}
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=headers, timeout=TIMEOUT) as r:
+            async with session.get(url, headers=headers) as r:
                 # async with session.get(url, headers={}, timeout=TIMEOUT) as r:
                 log.info(f'fetch url: {url}')
                 resp = await r.text()
@@ -100,12 +100,9 @@ async def parser_article(name, url, loop=None):
     if not loop:
         loop = asyncio.get_event_loop()
     lastest_url = await parser_url(url)
-    # TODO compare with last url
-    # diff = await loop.run_in_executor(executor, filter_url, JSON_FILE, lastest_urls)
     need_update = await filter_url(name, lastest_url)
     if need_update:
         resp = await get_resp(lastest_url)
-        # name = await loop.run_in_executor(executor, get_url, url)
         parse = await loop.run_in_executor(executor, get_tree, resp)
         try:
             title = parse.xpath('//div[@class="bookname"]/h1/text()')
@@ -120,12 +117,11 @@ async def parser_article(name, url, loop=None):
             content_str = '\n'.join(content)
             if "正在手打中" in content_str:
                 log.info("正在手打中,尴尬")
-                await parser_article(name, url)
-                await asyncio.sleep(TIMEOUT)
-            result = await send_mail(name + title[0], content_str)
-            log.info("send result: {}".format(result))
-            # TODO modify last url
-            await save_lastest_url(name, lastest_url)
+                return
+            else:
+                result = await send_mail(name + title[0], content_str)
+                log.info("send result: {}".format(result))
+                await save_lastest_url(name, lastest_url)
 
 
 async def filter_url(name, url):
