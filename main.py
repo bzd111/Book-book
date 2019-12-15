@@ -1,4 +1,6 @@
 import asyncio
+import functools
+import signal
 
 from config import SLEEP_TIME, URLS_DICT
 from utils import parser_article
@@ -13,7 +15,16 @@ async def main():
         await asyncio.sleep(SLEEP_TIME)
 
 
+def handle_signal(loop):
+    print('loop close....')
+    loop.stop()
+
+
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGTERM, functools.partial(handle_signal, loop=loop))
+    loop.add_signal_handler(
+        signal.SIGINT, lambda: asyncio.ensure_future(handle_signal(loop=loop))
+    )
     asyncio.ensure_future(main())
     loop.run_forever()
