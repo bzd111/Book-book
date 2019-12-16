@@ -3,4 +3,5 @@ FROM zidy/basic-book:0.2.0
 ADD . /opt/book
 WORKDIR /opt/book
 
-ENTRYPOINT ["python", "-m", "main"]
+# ENTRYPOINT ["python", "-m", "main"]
+CMD ["python", "-m", "main"]
