@@ -7,12 +7,10 @@ from utils import parser_article
 
 
 async def main():
-    while True:
-        tasks = [parser_article(name, url) for url, name in URLS_DICT.items()]
-        # await parser_articles(list(URLS_DICT.keys()))
-        # await asyncio.gather(*tasks)
-        done, undo = await asyncio.wait(tasks)
-        await asyncio.sleep(SLEEP_TIME)
+    tasks = [parser_article(name, url) for url, name in URLS_DICT.items()]
+    # await parser_articles(list(URLS_DICT.keys()))
+    # await asyncio.gather(*tasks)
+    done, undo = await asyncio.wait(tasks)
 
 
 def handle_signal(loop):
