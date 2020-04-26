@@ -99,7 +99,7 @@ makedirs(LOGS_DIR)
 logging.config.dictConfig(LOGGING)
 
 # read from ENV
-mail_to_list = ['zxc@gogogozxc.xyz', '528475283@qq.com']
+mail_to_list = ['zxc@gogogozxc.xyz']
 mail_host = 'smtp.qq.com'
 mail_user = os.environ['MailUser']
 mail_pass = os.environ['MailPass']
