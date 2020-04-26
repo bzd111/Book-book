@@ -1,12 +1,14 @@
 name: "Github Action Send Email"
 
 on:
-    push:
+  push:
+    branches:
+      - master
     schedule:
         - cron: '0/5 * * * *'
 
 jobs:
-    bot:
+    checker:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
