@@ -98,6 +98,15 @@ def makedirs(name, mode=0o777):
 makedirs(LOGS_DIR)
 logging.config.dictConfig(LOGGING)
 
+# read from ENV
+mail_to_list = ['zxc@gogogozxc.xyz', '528475283@qq.com']
+mail_host = 'smtp.qq.com'
+mail_user = os.environ['MailUser']
+mail_pass = os.environ['MailPass']
+mail_postfix = 'qq.com'
+mail_port = 465
+
+# import from local file
 try:
     from local_settings import *  # noqa
 except ImportError:
