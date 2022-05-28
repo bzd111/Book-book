@@ -13,6 +13,12 @@ async def main():
     done, undo = await asyncio.wait(tasks)
 
 
+async def schedule(interval: int):
+    while True:
+        await main()
+        await asyncio.sleep(interval)
+
+
 def handle_signal(loop):
     print('loop close....')
     loop.stop()
@@ -26,4 +32,5 @@ if __name__ == '__main__':
     # )
     # asyncio.ensure_future(main())
     # loop.run_forever()
-    asyncio.run(main())
+    # asyncio.run(main())
+    asyncio.run(schedule(60))

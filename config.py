@@ -11,20 +11,15 @@ JSON_FILE = ROOT_PATH / 'urls.json'
 
 DATA_DB = os.path.join(ROOT_PATH, 'fake_useragent.json')
 
-SHENG_URL = 'https://www.biquge.com.cn/book/23488/'
-DIAN_URL = 'https://www.biquge.com.cn/book/31583/'
-YUAN_URL = 'https://www.biquge.com.cn/book/15517/'
-SAN_URL = 'https://www.biquge.com.cn/book/31833/'
-TIAN_URL = 'https://biquge.com.cn/book/32101/'
-LONG_URL = 'https://www.biquge.com.cn/book/36825/'
+# SHENG_URL = 'https://www.biquge.com.cn/book/23488/'
+# DIAN_URL = 'https://www.biquge.com.cn/book/31583/'
+# YUAN_URL = 'https://www.biquge.com.cn/book/15517/'
+# SAN_URL = 'https://www.biquge.com.cn/book/31833/'
+# TIAN_URL = 'https://biquge.com.cn/book/32101/'
+# LONG_URL = 'https://www.biquge.com.cn/book/36825/'
 
 URLS_DICT = {
-    SHENG_URL: '圣墟',
-    YUAN_URL: '元尊',
-    DIAN_URL: '点道为止',
-    SAN_URL: '三寸人间',
-    TIAN_URL: '天下第九',
-    LONG_URL: '龙族Ⅴ:悼亡者的归来',
+    # "https://www.xbiquge.so/book/55233/":"择日飞升",
 }
 
 SLEEP_TIME = 10
@@ -99,10 +94,10 @@ makedirs(LOGS_DIR)
 logging.config.dictConfig(LOGGING)
 
 # read from ENV
-mail_to_list = ['zxc@gogogozxc.xyz']
+mail_to_list = ['zxc@bzd111.me']
 mail_host = 'smtp.qq.com'
-mail_user = os.environ['MailUser']
-mail_pass = os.environ['MailPass']
+mail_user = os.getenv('MAIL_USER')
+mail_pass = os.getenv('MailPass')
 mail_postfix = 'qq.com'
 mail_port = 465
 

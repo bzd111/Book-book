@@ -62,8 +62,8 @@ async def fetch(url, retry=0):
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as r:
                 # async with session.get(url, headers={}, timeout=TIMEOUT) as r:
-                log.info(f'fetch url: {url}')
-                resp = await r.text()
+                log.debug(f'fetch url: {url}')
+                resp = await r.read()
                 return resp
     except (aiohttp.ServerDisconnectedError, ConnectionResetError, asyncio.TimeoutError):
         if retry < 3:

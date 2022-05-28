@@ -4,3 +4,5 @@ logs
 tests
 Pipfile
 Pipfile.lock
+venv
+local_settings.py
