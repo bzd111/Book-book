@@ -7,7 +7,7 @@ attrs==19.3.0
 chardet==3.0.4
 git+https://github.com/dongweiming/fake-useragent.git@299413519ac1b3e7607437ed187532281fcc48ad#egg=fake-useragent
 idna==2.8
-lxml==4.4.1
+lxml==4.9.1
 multidict==4.5.2
 typing-extensions==3.7.4.1
 yarl==1.4.0a11
